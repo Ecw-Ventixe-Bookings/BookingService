@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+
+using Domain.Entities;
 
 namespace Domain.Interfaces;
 
-public interface IBookingRepository
+public interface IBookingRepository : IBaseRepository<BookingEntity>
 {
 }
