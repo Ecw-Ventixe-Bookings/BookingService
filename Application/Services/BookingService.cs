@@ -84,4 +84,9 @@ public class BookingService(IBookingRepository repo)
     {
         throw new NotImplementedException();
     }
+
+    public async Task<int> GetTicketCountAsync(Guid id)
+    {
+        return await _repo.GetTicketCountAsync(id);
+    }
 }

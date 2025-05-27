@@ -54,4 +54,18 @@ internal class BookingRepository(SqlServerDbContext context) : BaseRepository<Bo
             ? new Result<BookingEntity> { Success = false, ErrorMessage = $"{expression} does not exist." }
             : new Result<BookingEntity> { Success = true, Data = entityIncluding };
     }
+
+    /// <summary>
+    /// Return the number of bookings for the given event ID
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public async Task<int> GetTicketCountAsync(Guid id)
+    {
+        var count = await _dbSet
+            .Where(x => x.EventId == id)
+            .SumAsync(x => x.TicketQuantity);
+
+        return count;
+    }
 }

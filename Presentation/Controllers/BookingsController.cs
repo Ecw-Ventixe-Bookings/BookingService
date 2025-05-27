@@ -8,7 +8,6 @@ namespace Presentation.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class BookingsController(BookingService bookingService) : ControllerBase
 {
     private readonly BookingService _bookingService = bookingService;
@@ -22,6 +21,12 @@ public class BookingsController(BookingService bookingService) : ControllerBase
             : BadRequest();
     }
 
+    // GetBookingsConnectedToUser(Email) <- User has to be loged in, no input for email.
+
+    // GetBookingsForEvent(eventId) <- on event details page, show how many tickets there are left from this query.
+
+    // on create, dto does not need email. user should be loged in, maybe change account to hold the other props as well?
+
     [HttpPost]
     public async Task<IActionResult> CreateBooking(CreateBookingDto dto)
     {
@@ -32,5 +37,16 @@ public class BookingsController(BookingService bookingService) : ControllerBase
         return result.Success
             ? Ok(result)
             : BadRequest();
+    }
+
+
+
+    [HttpGet("{eventId}")]
+    public async Task<IActionResult> GetCount(Guid eventId)
+    {
+        if (eventId == Guid.Empty) return BadRequest();
+
+        var count = await _bookingService.GetTicketCountAsync(eventId);
+        return Ok(count);
     }
 }
