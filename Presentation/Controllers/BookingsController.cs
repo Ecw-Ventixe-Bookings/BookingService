@@ -22,11 +22,10 @@ public class BookingsController(BookingService bookingService) : ControllerBase
     }
 
     // GetBookingsConnectedToUser(Email) <- User has to be loged in, no input for email.
-
-    // GetBookingsForEvent(eventId) <- on event details page, show how many tickets there are left from this query.
-
     // on create, dto does not need email. user should be loged in, maybe change account to hold the other props as well?
+    // AccountService should hold the contact information of the user, maybe set Auth:User:Id as the user ID on accountservice
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateBooking(CreateBookingDto dto)
     {
