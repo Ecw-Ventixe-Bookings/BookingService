@@ -9,8 +9,7 @@ public class BookingModel
 {
     public Guid Id { get; set; }
     public Guid EventId { get; set; }
+    public Guid AccountId { get; set; }
     public int TicketQuantity { get; set; }
     public DateTime BookingDate { get; set; }
-
-    public Guid BookingOwnerId { get; set; }
 }

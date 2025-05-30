@@ -20,24 +20,10 @@ public class BookingService(IBookingRepository repo)
         var entity = new BookingEntity
         {
             EventId = dto.EventId,
+            AccountId = dto.AccountId,
             TicketQuantity = dto.TicketQuantity,
-            BookingDate = DateTime.Now,
-
-            BookingOwner = new BookingOwnerEntity
-            {
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Email = dto.Email,
-
-                Address = new BookingOwnerAddressEntity
-                {
-                    StreetAddress = dto.StreetAddress,
-                    PostalCode = dto.PostalCode,
-                    City = dto.City,
-                }
-            }
+            BookingDate = DateTime.Now,            
         };
-
 
         var result = await _repo.CreateAsync(entity);
         return result.Success
@@ -58,9 +44,9 @@ public class BookingService(IBookingRepository repo)
                 {
                     Id = booking.Id,
                     EventId = booking.EventId,
+                    AccountId = booking.AccountId,
                     TicketQuantity = booking.TicketQuantity,
-                    BookingDate = booking.BookingDate,
-                    BookingOwnerId = booking.BookingOwnerId
+                    BookingDate = booking.BookingDate
                 });
             }
         }
@@ -75,10 +61,6 @@ public class BookingService(IBookingRepository repo)
         throw new NotImplementedException();
     }
 
-    public Task<Result> UpdateAsync(UpdateBookingDto dto)
-    {
-        throw new NotImplementedException();
-    }
 
     public Task<Result> DeleteAsync(Guid id)
     {
@@ -90,9 +72,9 @@ public class BookingService(IBookingRepository repo)
         return await _repo.GetTicketCountAsync(id);
     }
 
-    public async Task<Result<IEnumerable<BookingModel>>> GetUserBookings(Guid userId)
+    public async Task<Result<IEnumerable<BookingModel>>> GetUserBookings(Guid accountId)
     {
-        var result = await _repo.GetAllAsync(x => x.BookingOwnerId == userId);
+        var result = await _repo.GetAllAsync(x => x.AccountId == accountId);
         List<BookingModel> bookings = new();
 
         if (result.Success && result.Data is not null)
@@ -103,9 +85,9 @@ public class BookingService(IBookingRepository repo)
                 {
                     Id = booking.Id,
                     EventId = booking.EventId,
+                    AccountId = booking.AccountId,
                     TicketQuantity = booking.TicketQuantity,
-                    BookingDate = booking.BookingDate,
-                    BookingOwnerId = booking.BookingOwnerId
+                    BookingDate = booking.BookingDate
                 });
             }
         }
