@@ -46,7 +46,7 @@ public class BookingsController(BookingService bookingService) : ControllerBase
         if (eventId == Guid.Empty) return BadRequest();
 
         var count = await _bookingService.GetTicketCountAsync(eventId);
-        return Ok(count);
+        return Ok(new { count });
     }
 
     [Authorize]
