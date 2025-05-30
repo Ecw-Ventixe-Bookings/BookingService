@@ -89,4 +89,29 @@ public class BookingService(IBookingRepository repo)
     {
         return await _repo.GetTicketCountAsync(id);
     }
+
+    public async Task<Result<IEnumerable<BookingModel>>> GetUserBookings(Guid userId)
+    {
+        var result = await _repo.GetAllAsync(x => x.BookingOwnerId == userId);
+        List<BookingModel> bookings = new();
+
+        if (result.Success && result.Data is not null)
+        {
+            foreach (var booking in result.Data)
+            {
+                bookings.Add(new BookingModel
+                {
+                    Id = booking.Id,
+                    EventId = booking.EventId,
+                    TicketQuantity = booking.TicketQuantity,
+                    BookingDate = booking.BookingDate,
+                    BookingOwnerId = booking.BookingOwnerId
+                });
+            }
+        }
+
+        return result.Success
+            ? new Result<IEnumerable<BookingModel>> { Success = true, Data = bookings }
+            : new Result<IEnumerable<BookingModel>> { Success = false, ErrorMessage = "Could not get the bookings" };
+    }
 }

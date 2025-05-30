@@ -9,23 +9,42 @@ namespace Infrastructure.Repositories;
 
 internal class BookingRepository(SqlServerDbContext context) : BaseRepository<BookingEntity>(context), IBookingRepository
 {
-    public override async Task<Result<IEnumerable<BookingEntity>>> GetAllAsync(Expression<Func<IEnumerable<BookingEntity>, bool>>? expression, Func<IQueryable<BookingEntity>, IQueryable<BookingEntity>>? includes = null)
+    public override async Task<Result<IEnumerable<BookingEntity>>> GetAllAsync(Expression<Func<BookingEntity, bool>>? expression = null, Func<IQueryable<BookingEntity>, IQueryable<BookingEntity>>? includes = null)
     {
         try
         {
-            if (includes is null)
+            IQueryable<BookingEntity> query = _dbSet;
+
+            if (expression is not null)
+                query = query.Where(expression);
+
+            if (includes is not null)
             {
-                var entities = await _dbSet
+                query = includes(query);
+            }
+            else
+            {
+                query = query
                     .Include(x => x.BookingOwner)
-                    .ThenInclude(x => x.Address)
-                    .ToListAsync();
-                return new Result<IEnumerable<BookingEntity>> { Success = true, Data = entities };
+                    .ThenInclude(x => x.Address);
             }
 
-            IQueryable<BookingEntity> query = _dbSet;
-            query = includes(query);
-            var entitiesIncluding = await query.ToListAsync();
-            return new Result<IEnumerable<BookingEntity>> { Success = true, Data = entitiesIncluding };
+            var entities = await query.ToListAsync();
+            return new Result<IEnumerable<BookingEntity>> { Success = true, Data = entities };
+
+            //if (includes is null)
+            //{
+            //    var entities = await _dbSet
+            //        .Include(x => x.BookingOwner)
+            //        .ThenInclude(x => x.Address)
+            //        .ToListAsync();
+            //    return new Result<IEnumerable<BookingEntity>> { Success = true, Data = entities };
+            //}
+
+            //IQueryable<BookingEntity> query = _dbSet;
+            //query = includes(query);
+            //var entitiesIncluding = await query.ToListAsync();
+            //return new Result<IEnumerable<BookingEntity>> { Success = true, Data = entitiesIncluding };
         }
         catch (Exception e)
         {

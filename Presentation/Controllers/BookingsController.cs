@@ -40,7 +40,7 @@ public class BookingsController(BookingService bookingService) : ControllerBase
 
 
 
-    [HttpGet("{eventId}")]
+    [HttpGet("count/{eventId}")]
     public async Task<IActionResult> GetCount(Guid eventId)
     {
         if (eventId == Guid.Empty) return BadRequest();
@@ -49,11 +49,14 @@ public class BookingsController(BookingService bookingService) : ControllerBase
         return Ok(count);
     }
 
-    [HttpGet]
+    [Authorize]
+    [HttpGet("user/{userId}")]
     public async Task<IActionResult> GetUserBookings(Guid userId)
     {
         if (userId == Guid.Empty) return BadRequest();
-
-        return Ok();
+        var result = await _bookingService.GetUserBookings(userId);
+        return result.Success
+            ? Ok(result)
+            : BadRequest();
     }
 }
