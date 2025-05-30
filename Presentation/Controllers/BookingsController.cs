@@ -48,4 +48,12 @@ public class BookingsController(BookingService bookingService) : ControllerBase
         var count = await _bookingService.GetTicketCountAsync(eventId);
         return Ok(count);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetUserBookings(Guid userId)
+    {
+        if (userId == Guid.Empty) return BadRequest();
+
+        return Ok();
+    }
 }

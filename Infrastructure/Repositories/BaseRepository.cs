@@ -28,7 +28,7 @@ internal abstract class BaseRepository<TEntity>(SqlServerDbContext context)
         }
     }   
 
-    public virtual async Task<Result<IEnumerable<TEntity>>> GetAllAsync(Func<IQueryable<TEntity>, IQueryable<TEntity>>? includes = null)
+    public virtual async Task<Result<IEnumerable<TEntity>>> GetAllAsync(Expression<Func<IEnumerable<TEntity>, bool>>? expression, Func<IQueryable<TEntity>, IQueryable<TEntity>>? includes = null)
     {
         try
         {

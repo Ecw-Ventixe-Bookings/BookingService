@@ -9,7 +9,7 @@ namespace Infrastructure.Repositories;
 
 internal class BookingRepository(SqlServerDbContext context) : BaseRepository<BookingEntity>(context), IBookingRepository
 {
-    public override async Task<Result<IEnumerable<BookingEntity>>> GetAllAsync(Func<IQueryable<BookingEntity>, IQueryable<BookingEntity>>? includes = null)
+    public override async Task<Result<IEnumerable<BookingEntity>>> GetAllAsync(Expression<Func<IEnumerable<BookingEntity>, bool>>? expression, Func<IQueryable<BookingEntity>, IQueryable<BookingEntity>>? includes = null)
     {
         try
         {
@@ -68,4 +68,6 @@ internal class BookingRepository(SqlServerDbContext context) : BaseRepository<Bo
 
         return count;
     }
+
+    
 }
