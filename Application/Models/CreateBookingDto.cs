@@ -15,6 +15,8 @@ public class CreateBookingDto
 
     [Range(1, 7, ErrorMessage = "Max amount of tickets you can buy is 7")]
     public int TicketQuantity { get; set; } = 1;
+
+    public string AccountEmail { get; set; } = string.Empty;
 }
 
 

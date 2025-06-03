@@ -12,6 +12,7 @@ public class BookingsController(BookingService bookingService) : ControllerBase
 {
     private readonly BookingService _bookingService = bookingService;
 
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAllBookings()
     {

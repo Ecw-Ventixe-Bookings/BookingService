@@ -2,18 +2,21 @@
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Models;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Application.Services;
 
-public class BookingService(IBookingRepository repo)
+public class BookingService(IBookingRepository repo, EmailService emailService)
 {
     private readonly IBookingRepository _repo = repo;
+    private readonly EmailService _emailService = emailService;
 
     public async Task<Result> CreateAsync(CreateBookingDto dto)
     {
@@ -26,6 +29,9 @@ public class BookingService(IBookingRepository repo)
         };
 
         var result = await _repo.CreateAsync(entity);
+
+        await _emailService.SendConfirmationEmailAsync(dto);
+
         return result.Success
             ? new Result() { Success = true }
             : new Result() { Success = false, ErrorMessage = "Booking could not be created" };
