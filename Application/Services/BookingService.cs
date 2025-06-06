@@ -68,9 +68,17 @@ public class BookingService(IBookingRepository repo, EmailService emailService)
     }
 
 
-    public Task<Result> DeleteAsync(Guid id)
+    public async Task<Result> DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var repoResult = await _repo.GetAsync(b => b.Id == id);
+        
+        if (repoResult.Success && repoResult.Data is not null)
+        {
+            var result = await _repo.DeleteAsync(repoResult.Data);
+            return result.Success
+                ? result : new Result { Success = false, ErrorMessage = result.ErrorMessage };
+        }
+        return new Result { Success = false, ErrorMessage = repoResult.ErrorMessage };   
     }
 
     public async Task<int> GetTicketCountAsync(Guid id)

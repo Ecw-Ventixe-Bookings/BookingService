@@ -56,9 +56,20 @@ internal class BookingRepository(SqlServerDbContext context) : IBookingRepositor
         }
         
     }
-    public Task<Result> DeleteAsync(BookingEntity entity)
+    public async Task<Result> DeleteAsync(BookingEntity entity)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _context.Bookings.Remove(entity);
+            int result = await _context.SaveChangesAsync();
+            return result > 0
+                ? new Result { Success = true, StatusCode = 200 }
+                : new Result { Success = false, ErrorMessage = "Falied to remove the Booking" };
+        }
+        catch (Exception e)
+        {
+            return new Result { Success = false, ErrorMessage = "An exception happened when removing booking: " +  e.Message };
+        }
     }
     ///// <summary>
     ///// Return the number of bookings for the given event ID
